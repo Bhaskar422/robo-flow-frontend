@@ -142,7 +142,9 @@ const ImageCaptureComponent = () => {
             <img
               src={capturedImage}
               alt="Captured"
-              className="max-w-full h-auto transform scale-x-[-1] rounded-md my-4"
+              className={`max-w-full h-auto transform ${
+                !rearCamera ? "scale-x-[-1]" : ""
+              } rounded-md my-4`}
             />
             <div className="flex justify-between items-center">
               <Button variant={"secondary"} onClick={handleRecapture}>
@@ -156,7 +158,9 @@ const ImageCaptureComponent = () => {
           <div>
             <video
               ref={videoRef}
-              className="max-w-full h-auto border border-gray-500 transform scale-x-[-1] rounded-md my-4"
+              className={`max-w-full h-auto border border-gray-500 transform ${
+                !rearCamera ? "scale-x-[-1]" : ""
+              } rounded-md my-4`}
               style={{ display: capturedImage ? "none" : "block" }}
             />
             <div className="flex justify-between items-center">
@@ -177,7 +181,9 @@ const ImageCaptureComponent = () => {
             <img
               src={decodedImage}
               alt="Decoded"
-              className="max-w-full h-auto transform scale-x-[-1] rounded-md my-4"
+              className={`max-w-full h-auto transform ${
+                !rearCamera ? "scale-x-[-1]" : ""
+              } rounded-md my-4`}
             />
           </div>
         )}
