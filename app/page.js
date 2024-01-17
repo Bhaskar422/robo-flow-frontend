@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <main>
       <div>
-        <Image src={"/AIQUA.svg"} width={64} height={64} />
+        <Image alt="logo" src={"/AIQUA.svg"} width={64} height={64} />
       </div>
       <ImageCaptureComponent />
     </main>

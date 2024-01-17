@@ -13,6 +13,7 @@ const ImageCaptureComponent = () => {
 
   const [loading, setLoading] = useState(false);
   const [decodedImage, setDecodedImage] = useState(null);
+  const [detections, setDetections] = useState(null);
 
   const videoRef = useRef(null);
 
@@ -68,6 +69,7 @@ const ImageCaptureComponent = () => {
       setCapturedImage(capturedDataURL);
 
       setDecodedImage(null);
+      setDetections(null);
 
       if (videoRef.current) {
         mediaStream.getTracks().forEach((track) => track.stop());
@@ -82,6 +84,7 @@ const ImageCaptureComponent = () => {
   const handleRecapture = async () => {
     setCapturedImage(null);
     setDecodedImage(null);
+    setDetections(null);
 
     // Restart the video stream
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -95,7 +98,6 @@ const ImageCaptureComponent = () => {
 
   const handleSubmit = async () => {
     setLoading(true);
-    console.log("Clicked Submit");
     try {
       const base64Data = capturedImage.split(",")[1];
       const arrayBuffer = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
@@ -111,13 +113,16 @@ const ImageCaptureComponent = () => {
         method: "POST",
         body: formData,
       });
-      console.log("received response");
 
       if (response.ok) {
         const blob = await response.blob();
         const objectUrl = URL.createObjectURL(blob);
 
         setDecodedImage(objectUrl);
+        // console.log(response.headers);
+        const detections = response.headers.get("Detections");
+        setDetections(detections);
+        // console.log(detections);
         // const responseData = await response.json();
 
         // Assuming the API response has an 'image' field
@@ -129,7 +134,6 @@ const ImageCaptureComponent = () => {
     } catch (error) {
       console.error("Error getting final data:", error);
     } finally {
-      console.log("Finished Submit");
       setLoading(false);
     }
   };
@@ -185,6 +189,7 @@ const ImageCaptureComponent = () => {
                 !rearCamera ? "scale-x-[-1]" : ""
               } rounded-md my-4`}
             />
+            <p>Larvae Count: {detections}</p>
           </div>
         )}
       </div>
