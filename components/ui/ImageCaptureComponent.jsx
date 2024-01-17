@@ -136,7 +136,7 @@ const ImageCaptureComponent = () => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="mt-4 mx-4">
+      <div className="mx-4">
         {capturedImage && (
           <div>
             <img
