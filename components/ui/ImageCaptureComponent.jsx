@@ -21,7 +21,11 @@ const ImageCaptureComponent = () => {
     const getVideo = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: rearCamera ? "environment" : "user" },
+          video: {
+            width: { ideal: 3000 },
+            height: { ideal: 4000 },
+            facingMode: rearCamera ? "environment" : "user",
+          },
         });
         videoRef.current.srcObject = stream;
         videoRef.current.play();
@@ -88,7 +92,11 @@ const ImageCaptureComponent = () => {
 
     // Restart the video stream
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: rearCamera ? "environment" : "user" },
+      video: {
+        width: { ideal: 3000 },
+        height: { ideal: 4000 },
+        facingMode: rearCamera ? "environment" : "user",
+      },
     });
     videoRef.current.srcObject = stream;
     videoRef.current.play();
