@@ -9,7 +9,6 @@ import { Loader2 } from "lucide-react";
 const ImageCaptureComponent = () => {
   const [capturedImage, setCapturedImage] = useState(null);
   const [mediaStream, setMediaStream] = useState(null);
-  const [rearCamera, setRearCamera] = useState(true);
 
   const [loading, setLoading] = useState(false);
   const [decodedImage, setDecodedImage] = useState(null);
@@ -17,13 +16,15 @@ const ImageCaptureComponent = () => {
 
   const videoRef = useRef(null);
 
+  const rearCamera = true;
+
   useEffect(() => {
     const getVideo = async () => {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
           video: {
             width: { ideal: 3000 },
-            height: { ideal: 4000 },
+            height: { ideal: 3000 },
             facingMode: rearCamera ? "environment" : "user",
           },
         });
@@ -49,27 +50,25 @@ const ImageCaptureComponent = () => {
 
   const handleCaptureImage = async () => {
     try {
-      // const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      // const video = document.createElement("video");
       const captureCanvas = document.createElement("canvas");
-
-      // const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      // videoRef.current.srcObject = stream;
-      // videoRef.current.play();
-
-      // const captureCanvas = document.createElement('canvas');
-      captureCanvas.width = videoRef.current.videoWidth;
-      captureCanvas.height = videoRef.current.videoHeight;
       const ctx = captureCanvas.getContext("2d");
+      const videoWidth = videoRef.current.videoWidth;
+      const videoHeight = videoRef.current.videoHeight;
+      const size = Math.min(videoWidth, videoHeight);
+      captureCanvas.width = size;
+      captureCanvas.height = size;
+      ctx.beginPath();
+      ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+      ctx.clip();
       ctx.drawImage(
         videoRef.current,
-        0,
-        0,
-        videoRef.current.videoWidth,
-        videoRef.current.videoHeight
+        (size - videoWidth) / 2,
+        (size - videoHeight) / 2,
+        videoWidth,
+        videoHeight
       );
 
-      const capturedDataURL = captureCanvas.toDataURL("image/png");
+      const capturedDataURL = captureCanvas.toDataURL("image/jpeg");
       setCapturedImage(capturedDataURL);
 
       setDecodedImage(null);
@@ -127,15 +126,8 @@ const ImageCaptureComponent = () => {
         const objectUrl = URL.createObjectURL(blob);
 
         setDecodedImage(objectUrl);
-        // console.log(response.headers);
         const detections = response.headers.get("Detections");
         setDetections(detections);
-        // console.log(detections);
-        // const responseData = await response.json();
-
-        // Assuming the API response has an 'image' field
-        // const decodedImageData = atob(responseData.image);
-        // setDecodedImage(`data:image/png;base64,${decodedImageData}`);
       } else {
         console.error("API Error:", response.statusText);
       }
@@ -156,7 +148,7 @@ const ImageCaptureComponent = () => {
               alt="Captured"
               className={`max-w-full h-auto transform ${
                 !rearCamera ? "scale-x-[-1]" : ""
-              } rounded-md my-4`}
+              } rounded-full my-4`}
             />
             <div className="flex justify-between items-center">
               <Button variant={"secondary"} onClick={handleRecapture}>
@@ -170,18 +162,15 @@ const ImageCaptureComponent = () => {
           <div>
             <video
               ref={videoRef}
-              className={`max-w-full h-auto border border-gray-500 transform ${
-                !rearCamera ? "scale-x-[-1]" : ""
-              } rounded-md my-4`}
-              style={{ display: capturedImage ? "none" : "block" }}
+              className={` border border-gray-500
+                my-4
+                aspect-square
+                transform ${!rearCamera ? "scale-x-[-1]" : ""} rounded-full object-cover`}
+              style={{
+                display: capturedImage ? "none" : "block",
+              }}
             />
-            <div className="flex justify-between items-center">
-              <Button
-                variant={"secondary"}
-                onClick={() => setRearCamera((rearCamera) => !rearCamera)}
-              >
-                Flip Camera
-              </Button>
+            <div className="flex justify-center items-center">
               <Button onClick={handleCaptureImage}>Capture</Button>
             </div>
           </div>
@@ -195,7 +184,7 @@ const ImageCaptureComponent = () => {
               alt="Decoded"
               className={`max-w-full h-auto transform ${
                 !rearCamera ? "scale-x-[-1]" : ""
-              } rounded-md my-4`}
+              } rounded-full my-4`}
             />
             <p>Larvae Count: {detections}</p>
           </div>
