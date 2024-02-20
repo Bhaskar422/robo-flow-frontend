@@ -108,29 +108,36 @@ const ImageCaptureComponent = () => {
     try {
       const base64Data = capturedImage.split(",")[1];
       const arrayBuffer = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
-      const fileBlob = new Blob([arrayBuffer], { type: "image/png" });
+      const fileBlob = new Blob([arrayBuffer], { type: "image/jpeg" });
 
       // Create a File object from the blob
-      const capturedFile = new File([fileBlob], "captured_image.png");
+      const capturedFile = new File([fileBlob], "captured_image.jpeg");
+      console.log(capturedFile);
 
       const formData = new FormData();
       formData.append("file", capturedFile);
+      formData.append("user_id", "boss");
+      console.log(formData);
 
       const response = await fetch(`${robo_flow_endpoint}/process_and_predict`, {
         method: "POST",
         body: formData,
       });
+      const responseData = await response.json();
+      console.log(responseData);
+      setDecodedImage(responseData.message);
+      setDetections(responseData.count);
 
-      if (response.ok) {
-        const blob = await response.blob();
-        const objectUrl = URL.createObjectURL(blob);
+      // if (response.ok) {
+      //   const blob = await response.blob();
+      //   const objectUrl = URL.createObjectURL(blob);
 
-        setDecodedImage(objectUrl);
-        const detections = response.headers.get("Detections");
-        setDetections(detections);
-      } else {
-        console.error("API Error:", response.statusText);
-      }
+      //   setDecodedImage(objectUrl);
+      //   const detections = response.headers.get("Detections");
+      //   setDetections(detections);
+      // } else {
+      //   console.error("API Error:", response.statusText);
+      // }
     } catch (error) {
       console.error("Error getting final data:", error);
     } finally {
