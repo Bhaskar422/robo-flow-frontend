@@ -16,7 +16,7 @@ const ImageCaptureComponent = () => {
 
   const videoRef = useRef(null);
 
-  const rearCamera = true;
+  // const rearCamera = true;
 
   useEffect(() => {
     const getVideo = async () => {
@@ -25,7 +25,7 @@ const ImageCaptureComponent = () => {
           video: {
             width: { ideal: 3000 },
             height: { ideal: 3000 },
-            facingMode: rearCamera ? "environment" : "user",
+            // facingMode: rearCamera ? "environment" : "user",
           },
         });
         videoRef.current.srcObject = stream;
@@ -94,7 +94,7 @@ const ImageCaptureComponent = () => {
       video: {
         width: { ideal: 3000 },
         height: { ideal: 4000 },
-        facingMode: rearCamera ? "environment" : "user",
+        // facingMode: rearCamera ? "environment" : "user",
       },
     });
     videoRef.current.srcObject = stream;
@@ -150,9 +150,7 @@ const ImageCaptureComponent = () => {
             <img
               src={capturedImage}
               alt="Captured"
-              className={`max-w-full h-auto transform ${
-                !rearCamera ? "scale-x-[-1]" : ""
-              } rounded-full my-4`}
+              className={`max-w-full h-auto transform rounded-full my-4`}
             />
             <div className="flex justify-between items-center">
               <Button variant={"secondary"} onClick={handleRecapture}>
@@ -169,7 +167,7 @@ const ImageCaptureComponent = () => {
               className={` border border-gray-500
                 my-4
                 aspect-square
-                transform ${!rearCamera ? "scale-x-[-1]" : ""} rounded-full object-cover`}
+                transform rounded-full object-cover`}
               style={{
                 display: capturedImage ? "none" : "block",
               }}
@@ -186,9 +184,7 @@ const ImageCaptureComponent = () => {
             <img
               src={decodedImage}
               alt="Decoded"
-              className={`max-w-full h-auto transform ${
-                !rearCamera ? "scale-x-[-1]" : ""
-              } rounded-full my-4`}
+              className={`max-w-full h-auto transform rounded-full my-4`}
             />
             <p>Larvae Count: {detections}</p>
           </div>
